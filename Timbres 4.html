@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localizador de Timbres</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 mb-4 text-center">Localizador de Timbres</h1>
+    
+    <!-- Mapa para mostrar los lugares cercanos -->
+    <div id="map"></div>
+  </div>
+
+  <script>
+    // Función para inicializar el mapa
+    function initMap() {
+      // Coordenadas de un punto de referencia (por ejemplo, el centro de la ciudad)
+      var centroCiudad = { lat: 40.7128, lng: -74.0060 }; // Nueva York como ejemplo
+
+      // Crea un nuevo mapa en el elemento con ID 'map'
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: centroCiudad,
+        zoom: 12 // Zoom inicial
+      });
+
+      // Obtener la ubicación del cliente con alta precisión
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var clienteLatLng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          // Agregar marcador para la ubicación del cliente con color celeste
+          var clienteMarker = new google.maps.Marker({
+            position: clienteLatLng,
+            map: map,
+            title: 'Tu ubicación',
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 10,
+              fillColor: 'lightblue',
+              fillOpacity: 1,
+              strokeColor: 'white',
+              strokeWeight: 2
+            }
+          });
+
+          // Centrar el mapa en la ubicación del cliente
+          map.setCenter(clienteLatLng);
+        }, function() {
+          // Manejar errores de geolocalización
+          alert('Error: No se pudo obtener la ubicación del cliente.');
+        }, { enableHighAccuracy: true });
+      } else {
+        // El navegador no soporta geolocalización
+        alert('Error: Tu navegador no soporta geolocalización.');
+      }
+
+      // Aquí podrías utilizar la API de geolocalización para obtener la ubicación del cliente
+      // y luego realizar una solicitud para obtener los lugares cercanos
+      // Por simplicidad, este ejemplo solo muestra unos pocos marcadores estáticos
+      var lugaresCercanos = [
+        { lat: -34.9017693, lng: -56.1748019, nombre: 'KIOSKO' },
+        { lat: -34.9054344, lng: -56.186083, nombre: 'NICOLÁS PEREYRA' },
+        { lat: -34.9032817, lng: -56.1791227999999, nombre: 'ASOC. ESCRIBANOS DEL URUGUAY' },
+        { lat: -34.9021388, lng: -56.1757954, nombre: 'KIOSKO GRAN CANAL' },
+        { lat: -34.9012517, lng: -56.1746299, nombre: 'PATRICIA CABOT Y PABLO MOREIRA' },
+        { lat: -34.8997168, lng: -56.1706705, nombre: 'PLATAFOR S.A.' },
+        { lat: -34.9002657, lng: -56.1627096, nombre: 'FRANCISCO BELLO' },
+        { lat: -34.913526, lng: -56.1624255, nombre: 'BAFFA JUAN CARLOS' },
+        { lat: -34.9062738, lng: -56.2065679, nombre: 'MITRIBA S.R.L.' },
+        { lat: -34.9055238, lng: -56.2048893, nombre: 'PAPELERIA REINA SOFIA' },
+        { lat: -34.8791664, lng: -56.14737, nombre: 'REDPAGOS' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'NICOLAS PORRO HERNANDEZ' },
+        { lat: -34.8583806, lng: -56.2178311, nombre: 'GESTO CESAR' },
+        { lat: -34.9076552, lng: -56.1978796, nombre: 'MAIORANO SIMOES CARLOS EDUARDO' },
+        { lat: -34.9060097, lng: -56.1982765, nombre: 'ABITAB' },
+        { lat: -34.9048818, lng: -56.1981105, nombre: 'EDUARDO ANDRES BECEIRO MASDEU' },
+        { lat: -34.8937489, lng: -56.0649502, nombre: 'FARMASHOP' },
+        { lat: -34.8932126, lng: -56.0651316, nombre: 'JIFLO S.R.L.' },
+        { lat: -34.8951835, lng: -56.189407, nombre: 'LENS MORA, WINSTON' },
+        { lat: -34.9009667, lng: -56.1749978, nombre: 'GARCIA ANDREA Y OTRO' },
+        { lat: -34.8037841, lng: -56.2230037, nombre: 'DOLLON S.A.' },
+        { lat: -34.8990882, lng: -56.1922528, nombre: 'BERON SHIRLEY Y OTRO' },
+        { lat: -34.8868683, lng: -56.1386803, nombre: 'CECILIA DOS SANTOS TRÍAS' },
+        { lat: -34.8290964, lng: -56.1000528, nombre: 'C.U.T.C.S.A.' },
+        { lat: -34.8938185, lng: -56.1881551, nombre: 'HERNÁNDEZ, MARIA LUISA' },
+        { lat: -34.8586605, lng: -56.1961436, nombre: 'PAPELERÍA PRADO' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'ABITAB' },
+        { lat: -34.9002899, lng: -56.1920187, nombre: 'MILTON RAMIREZ' },
+        { lat: -34.8999432, lng: -56.1299968999999, nombre: 'BERNARDO RICCARDI /SANTIAGO ÁLVAREZ' },
+        { lat: -34.9033585, lng: -56.1942282, nombre: 'LUIS ARANCO Y BEATRIZ ALONSO' },
+        { lat: -34.8929893, lng: -56.0655777, nombre: 'MARIA DE LEON Y RAMIRO DONATO' },
+        { lat: -34.8876963, lng: -56.1124926, nombre: 'ABITAB 58/4' },
+        { lat: -34.9067863, lng: -56.2020174, nombre: 'NADIA ESTEFANIA ARANDIGA CRISTOBAL' },
+        { lat: -34.9153092, lng: -56.1498627, nombre: 'DIEGO CUADRO CONSENZA' },
+        { lat: -34.8978328, lng: -56.1650415, nombre: 'CARLOS Y JUAN FRANCISCO TABÁREZ' },
+        { lat: -34.7652033, lng: -56.2318249, nombre: 'LUCY PREGLIASCO' },
+        { lat: -34.9064716, lng: -56.2099586, nombre: 'ABITAB' },
+        { lat: -34.9048667, lng: -56.1910879, nombre: 'ABITAB' },
+        { lat: -34.8998571, lng: -56.1741605, nombre: 'RUDI S.R.L.' },
+        { lat: -34.9055403, lng: -56.1986538, nombre: 'JUAN PABLO-AGUSTINA Y MARÍA FERRARA' },
+        { lat: -34.905275, lng: -56.1950669999999, nombre: 'ABITAB 10/16' },
+        { lat: -34.9058204, lng: -56.1843337, nombre: 'GUSTAVO CÉSAR BONORA MIRANDA' },
+        { lat: -34.9055551, lng: -56.1840927999999, nombre: 'DIVANOX SA' },
+        { lat: -34.9060145, lng: -56.1968028, nombre: 'JORGE NASSO y DIEGO NASSO' },
+        { lat: -34.9076279, lng: -56.2092622, nombre: 'DELBENE JIMENEZ DE ARECHAGA SANTIAG' },
+        { lat: -34.8704634, lng: -56.0692471, nombre: 'OLLERO, ANTONIO' },
+        { lat: -34.876435, lng: -56.1653671, nombre: 'ABITAB CÓRCEGA' },
+        { lat: -34.8963338, lng: -56.1681544, nombre: 'COOP. DE LAS FF.AA' },
+        { lat: -34.912373, lng: -56.1860119, nombre: 'GALAIN PABLO' },
+        { lat: -34.9082992, lng: -56.1864220999999, nombre: 'ALEXIS DAMIAN POSENTE' },
+        { lat: -34.9068969, lng: -56.1870738, nombre: 'EL CARNET PLÁSTICO' },
+        { lat: -34.8759429, lng: -56.1870039999999, nombre: 'EXPANDIR SA' },
+        { lat: -34.9023603, lng: -56.1789518999999, nombre: 'ALBA ARCE MENA S.R.L.' },
+        { lat: -34.9119789, lng: -56.1707666999999, nombre: 'SOCIEDAD DE ARQUITECTOS' },
+        { lat: -34.8873989, lng: -56.2485846999999, nombre: 'OLIVERA GARCIA MAURICIO RICHARD' },
+        { lat: -34.8799775, lng: -56.1715844999999, nombre: 'BELTRAME, ALVARO' },
+        { lat: -34.8823357, lng: -56.1824486, nombre: 'GERARDO CASTRO Y LAURA FROS' },
+        { lat: -34.9023953, lng: -56.1800576, nombre: 'TAPAS S.R.L.' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'BERMUDEZ FRANCISCO Y OTRO' },
+        { lat: -34.907306, lng: -56.1910569, nombre: 'PAPELERIA REINA SOFIA' },
+        { lat: -34.9069994, lng: -56.1913981, nombre: 'TRIBUNALES LTDA.' },
+        { lat: -34.9079394, lng: -56.203607, nombre: 'CLAUDIA VITACCA' },
+        { lat: -34.905859, lng: -56.2046237, nombre: 'ABITAB 10/27' },
+        { lat: -34.9148884, lng: -56.1494537, nombre: 'FUMBEL SA' },
+        { lat: -34.9046664, lng: -56.2038756, nombre: 'VALERIA TORRES Y MARTIN GUTIERREZ' },
+        { lat: -34.9068224, lng: -56.2010168, nombre: 'CARLOS y HERMIN LÓPEZ' },
+        { lat: -34.9052091, lng: -56.2012183999999, nombre: 'WALTER BUSCHIAZZO BENVENUTO' },
+        { lat: -34.8747066, lng: -56.1378987999999, nombre: 'SANDRA NION GONZALEZ Y LUIS DELGADO' },
+        { lat: -34.8925259, lng: -56.1785563, nombre: 'FARMACIA JURADOS' },
+        { lat: -34.8689412, lng: -56.1697955, nombre: 'ABITAB' },
+        { lat: -34.8630749999999, lng: -56.1798501, nombre: 'GALLARDO PEQUENO, GUSTAVO' },
+        { lat: -34.9028708, lng: -56.1796042999999, nombre: 'CAMBADU' },
+        { lat: -34.9039112, lng: -56.1914501, nombre: 'GERARDO Y MARCEL FELDER' },
+        { lat: -34.9077283, lng: -56.2060025, nombre: 'PAOLINO SPINELLI JOSE Y OTRO' },
+        { lat: -34.906755, lng: -56.206347, nombre: 'MARISA ICCARDI' },
+        { lat: -34.9057321, lng: -56.2068363, nombre: 'AKUMAL S.A.' },
+        { lat: -34.880281, lng: -56.1569227, nombre: 'MUÑOZ, AMALIA, FERREIRA ANA Y' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'BRIAN S.R.L.' },
+        { lat: -34.9067431, lng: -56.1925375999999, nombre: 'GABRIELA DAMIANI Y DIEGO PREVE' },
+        { lat: -34.901761, lng: -56.1876092, nombre: 'BLANCO TOMÁS' },
+        { lat: -34.9056407, lng: -56.2114815, nombre: 'EMA FERRAO Y' },
+        { lat: -34.90597, lng: -56.211419, nombre: 'PAZ ARROCHE CARLOS VICENTE' },
+        { lat: -34.9048021, lng: -56.2083024, nombre: 'GRACIELA VITOLA Y OTRO' },
+        { lat: -34.9060389, lng: -56.1959974, nombre: 'ALZUGARAY LORELEY' },
+        { lat: -34.9025891, lng: -56.1938389, nombre: 'ALBERTO MARIO BONANATA MANFREDINI' },
+        { lat: -34.9033911, lng: -56.185302, nombre: 'SHEILA MARY DI BRANA' },
+        { lat: -34.7912509, lng: -56.0710012, nombre: 'GALES EMP. DE SERV. FINANC.' },
+        { lat: -34.8162592, lng: -56.0973677, nombre: 'DIR.GRAL. SERVICIOS GANADEROS' },
+        { lat: -34.9062445, lng: -56.1848678, nombre: 'CARLOS NOGUERA SALAZAR' },
+        { lat: -34.907391, lng: -56.1971632, nombre: 'BRUNOLDI BASTON FERNANDO' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'PAULA SANSEVERINO' },
+        { lat: -34.9078008, lng: -56.1851235, nombre: 'SALÓN BACKGAMMON' },
+        { lat: -34.908513, lng: -56.2080695999999, nombre: 'CARLOS VASCONCELLOS Y JAVIER RODRÍGUEZ' },
+        { lat: -34.9065486, lng: -56.2023425, nombre: 'LORENA MORÁN Y LAURA MESA' },
+        { lat: -34.9055782, lng: -56.2058936, nombre: 'RODRIGO MARTÍN ROMERO BALDASSARI' },
+        { lat: -34.8997664, lng: -56.1789958, nombre: 'FAZZINO ANAHIR Y OTRO' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'CARUSO BARREIRO MARIA ANGÉLICA' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'MIGUEL POGGI' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'CARLOS AURELIO VIGO VÁZQUEZ' },
+        { lat: -34.9038577, lng: -56.1878539999999, nombre: 'CAMILO PREVE' },
+        { lat: -34.9055016, lng: -56.1851147, nombre: 'ASOC. DESPACHANTES DE ADUANA' },
+        { lat: -34.9063762, lng: -56.1902939999999, nombre: 'HECTOR BERRUTTI' },
+        { lat: -30.4047599, lng: -56.4710629, nombre: 'LUIS EDUARDO FUERTES MACHADO - ESTUDIO CONTABLE' },
+        { lat: -30.261591, lng: -57.6082724, nombre: 'MERCEDES Y AIDA MORAES' },
+        { lat: -30.2593521, lng: -57.5957413, nombre: 'SANTIAGO GEHR MAGLIONE' },
+        { lat: -34.7725891, lng: -55.7605773, nombre: 'SUPERMERCADO DISCO ATLANTIDA' },
+        { lat: -34.7416975, lng: -56.0265081, nombre: 'ABITAB 12/68' },
+        { lat: -34.5225976, lng: -56.2819776, nombre: 'MÓNICA PARARD BARBOZA' },
+        { lat: -34.5285512, lng: -56.2815254, nombre: 'MA. MERCEDES SANTURIO GONZATTO' },
+        { lat: -34.8028525, lng: -55.9104871, nombre: 'PAPELERÍA RAYUELA' },
+        { lat: -34.8409909, lng: -55.9933919, nombre: 'COPISER S.A.' },
+        { lat: -34.7256021, lng: -56.2031103, nombre: 'SHOPPING LAS PIEDRAS LOC. 21' },
+        { lat: -34.6077703, lng: -56.3584801, nombre: 'SILVIA LENZI LENZI' },
+        { lat: -34.8048722, lng: -55.9275789, nombre: 'GISSELE GIURIA' },
+        { lat: -34.7192093, lng: -55.963259, nombre: 'ALICIA DE LOS SANTOS Y VICTOR GARCÍA' },
+        { lat: -34.7215314, lng: -55.9580184, nombre: 'JENNIFER ROMERO' },
+        { lat: -34.4511387, lng: -56.0822541, nombre: 'MÓNICA MACHÍN' },
+        { lat: -34.5441447, lng: -55.8726689, nombre: 'CELINA VILLARINO' },
+        { lat: -34.2854727, lng: -55.9569097, nombre: 'ELIZABETH ARRILLAGA GUTIERREZ' },
+        { lat: -34.499035, lng: -56.0411037, nombre: 'ELVIO REGGIO' },
+        { lat: -34.6471345, lng: -56.0647696, nombre: 'CTRO.COM.IND. Y AGR. SAUCE' },
+        { lat: -34.825346, lng: -55.965371, nombre: 'PAPELERIA FOCACCIO' },
+        { lat: -34.3434759, lng: -55.7631576, nombre: 'CTRO.COM.IND.Y AGR. TALA' },
+        { lat: -34.7399879, lng: -56.0888599, nombre: 'BLANCA AQUINO' },
+        { lat: -34.7424511, lng: -56.0928576, nombre: 'SEBASTIÁN BEHETTI BELHOT' },
+        { lat: -32.3652616, lng: -54.1678592, nombre: 'JORGE VIERA Y ROBERTO QUADRELLI' },
+        { lat: -33.9975014, lng: -58.2859538, nombre: 'CENTRO COM E IND DE CARMELO' },
+        { lat: -34.4684249, lng: -57.8427759, nombre: 'CARMEN CIMINO Y SUSANA MORAÑA' },
+        { lat: -34.338333, lng: -57.265278, nombre: 'JUAN DANIEL VAGO ARMAND UGÓN' },
+        { lat: -34.0045574, lng: -57.6458284, nombre: 'LORENZO FODERE' },
+        { lat: -34.2900144, lng: -57.2326861, nombre: 'ABISUIZ SRL.' },
+        { lat: -34.2850914, lng: -57.2316915, nombre: 'KARINA NEMER' },
+        { lat: -34.2645193, lng: -57.6124215, nombre: 'PATRICIA CUTINELLA OLIVES' },
+        { lat: -33.3773407, lng: -56.5235241, nombre: 'RED SARMIENTO SRL' },
+        { lat: -33.3770491, lng: -56.5268241, nombre: 'COLEGIO DE CONTADORES DE DURAZNO' },
+        { lat: -33.3455114, lng: -55.6299372, nombre: 'FABIANA JULIA PEREYRA GODAY' },
+        { lat: -34.1012431, lng: -55.6495512, nombre: 'ESTHER RODRIGUEZ COLLAZO' },
+        { lat: -34.0989695, lng: -55.6489539, nombre: 'MARY MABEL MONFORT GARCÍA' },
+        { lat: -34.1960799999999, lng: -55.7403501, nombre: 'MA. DE LOURDES RODRÍGUEZ' },
+        { lat: -33.7346072, lng: -56.3218354, nombre: 'AGROSERVICIOS "LA QUESERIA"' },
+        { lat: -33.7230536, lng: -56.3300054, nombre: 'JORGE BRIGNONI STOPINGI' },
+        { lat: -33.455054, lng: -54.5346856, nombre: 'JUAN CARLOS ARDAO' },
+        { lat: -34.601407, lng: -55.4668684, nombre: 'LA QUEBRADA S.R.L.' },
+        { lat: -34.9126145, lng: -54.9584549, nombre: 'VENCER S.A.' },
+        { lat: -34.9182863, lng: -54.9565664, nombre: 'EBERT ANDRES MALCEÑIDO AVERO' },
+        { lat: -34.9084015, lng: -54.9569967, nombre: 'MA. DE LOURDES Y JACQUELINE DIDE' },
+        { lat: -34.9082807, lng: -54.9588716, nombre: 'PAGOS DEL ESTE SRL' },
+        { lat: -34.9084492, lng: -54.9630391, nombre: 'LÍBER MARTÍN NOGUES GORRICHO' },
+        { lat: -34.9135976, lng: -54.9574599, nombre: 'COLEGIO DE ABOGADOS DE MALDONADO' },
+        { lat: -34.905078, lng: -54.8281102, nombre: 'MATÍAS FELIPE ERAUSQUIN' },
+        { lat: -34.8688416, lng: -55.2728289999999, nombre: 'JORGE DE VIVO TURANO' },
+        { lat: -34.8677555, lng: -55.2761238999999, nombre: 'DIEGO FYNN SANIN' },
+        { lat: -34.8770968, lng: -55.0584731, nombre: 'REDPAGOS' },
+        { lat: -34.9498413, lng: -54.926299, nombre: 'PATRICIO VICTORICA' },
+        { lat: -34.8998946, lng: -54.9438082, nombre: 'MARIA LAURA MARTINEZ MEOQUI' },
+        { lat: -34.958206, lng: -54.9396649, nombre: 'AKUMAL S.A.' },
+        { lat: -34.9471864, lng: -54.9333539, nombre: 'PUNTA PLANOS' },
+        { lat: -34.9360588, lng: -54.9378104, nombre: 'DANIEL FAUSTINO COITINHO AZEVEDO' },
+        { lat: -34.7928629, lng: -54.9207508, nombre: 'PASAJE DIAMANTE' },
+        { lat: -34.792797, lng: -54.9163864, nombre: 'JAVIER NÚÑEZ GRIECO' },
+        { lat: -32.3169894, lng: -58.0858891, nombre: 'MARIA VICTORIA CHINAZZO ACOSTA' },
+        { lat: -32.3231765, lng: -58.0811118, nombre: 'ÁLVARO LAMAS Y LUIS MOJOLI' },
+        { lat: -32.3162128, lng: -58.0847458999999, nombre: 'COLEGIO DE ABOGADOS DE PAYSANDÚ' },
+        { lat: -32.3195205, lng: -58.0809615, nombre: 'AGUSTINA LAFOURCADE CHEBATOROFF' },
+        { lat: -32.316837, lng: -58.0800537, nombre: 'CENTRO VETERINARIO DE PAYSANDÚ' },
+        { lat: -32.7033497, lng: -57.6322280999999, nombre: 'DIVANOX S.A.' },
+        { lat: -33.1180341, lng: -58.3141208, nombre: 'FERNANDO RAÚL DOTI TORI' },
+        { lat: -31.7746133, lng: -54.6852782, nombre: 'JORGE FRAGA DOS SANTOS' },
+        { lat: -33.6926953, lng: -53.4570445, nombre: 'OSCAR MÉNDEZ GIANOLA' },
+        { lat: -33.69603, lng: -53.4553667, nombre: 'PAPELERIA FRIDA' },
+        { lat: -33.6769908, lng: -54.2063744, nombre: 'CTRO.COM. E IND.DE LASCANO' },
+        { lat: -34.4844887, lng: -54.3308697, nombre: 'ABITAB PLAZA ANSINA' },
+        { lat: -34.4805229, lng: -54.3381042, nombre: 'BANCA DE QUINIELAS' },
+        { lat: -31.3885685, lng: -57.967849, nombre: 'ROBERTO CORDERO MÉNDEZ' },
+        { lat: -31.3888131, lng: -57.9657884, nombre: 'SANTIAGO LICHERO' },
+        { lat: -31.385959, lng: -57.9501556, nombre: 'JOSÉ RODRIGO GOÑI ROMERO' },
+        { lat: -31.3786145, lng: -57.9415019, nombre: 'GIOVANNA GODOY VAGNER' },
+        { lat: -34.383766, lng: -56.5404407, nombre: 'FIORELLA BANIZI' },
+        { lat: -34.7395667, lng: -56.4572489, nombre: 'MARISA LOURDES BARREIRO CÁCERES' },
+        { lat: -34.8235558, lng: -56.2433027, nombre: 'NATHALIE VICTORIA GARCIA LABANDERA' },
+        { lat: -34.6328349, lng: -56.6177668, nombre: 'MA. DOLORES NUÑEZ FRANCO' },
+        { lat: -34.7374454, lng: -56.4380124, nombre: 'LOURDES LOPEZ MORAES' },
+        { lat: -34.3818726, lng: -56.5391519999999, nombre: 'NIRIA BAEZ DE MATA' },
+        { lat: -33.872733, lng: -57.3686544, nombre: 'ESTRELLITA PEREZ VALIENTE' },
+        { lat: -33.529312, lng: -58.2142024999999, nombre: 'VÍA SEGURA S.R.L.' },
+        { lat: -33.5331503, lng: -58.2156029, nombre: 'VERÓNICA VIGNOLO RODRÍGUEZ' },
+        { lat: -33.6959083, lng: -57.5307027, nombre: 'ABITAB 27/11' },
+        { lat: -32.8120093, lng: -56.5101546, nombre: 'MIGUEL ANÍBAL SOSA' },
+        { lat: -31.7147172, lng: -55.9822688, nombre: 'LIBRERÍA OFFICE CENTER' },
+        { lat: -31.7190817, lng: -55.9867188, nombre: 'SELVA MADERA Y PIERINA LATAPIE' },
+        { lat: -31.7166332, lng: -55.9838667, nombre: 'PABLO OMAR ALAMON' },
+        { lat: -31.7159119, lng: -55.9830397, nombre: 'VALERIA VICTORIA VAZQUEZ PEPE' },
+        { lat: -31.7168661, lng: -55.978627, nombre: 'KARINA DE MATTOS' },
+        { lat: -31.7124187, lng: -55.9780996999999, nombre: 'MA. BEATRIZ LIMA' },
+        { lat: -31.8793866, lng: -56.2394589, nombre: 'ESTUDIO SILVEIRA' },
+        { lat: -33.1030716, lng: -55.1306959, nombre: 'PATRICIA GIMÉNEZ LÓPEZ' },
+        { lat: -33.1006837, lng: -55.1368925, nombre: 'CARLOS COLINA IFRAN' },
+        { lat: -32.9239604, lng: -54.9421817, nombre: 'ALIDA VIERA PIÑEYRO' },
+        { lat: -33.2203653, lng: -54.388676, nombre: 'INÉS OLIVERA GOICOCHEA' },
+        { lat: -33.2303203, lng: -54.3870354, nombre: 'PAGO ORIENTAL S.R.L.' }
+      ];
+	  /*var direccionesCercanas = [
+            '1600 Amphitheatre Parkway, Mountain View, CA',
+            '1401 West Capitol Avenue, West Sacramento, CA',
+            '24 Willie Mays Plaza, San Francisco, CA'
+          ];
+		*/
+      // Añade marcadores para cada lugar cercano
+      lugaresCercanos.forEach(function(lugar) {
+        var marker = new google.maps.Marker({
+          position: { lat: lugar.lat, lng: lugar.lng },
+          map: map,
+          title: lugar.nombre
+        });
+      });
+    }
+  </script>
+
+  <!-- Carga de la API de Google Maps -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnGCi5DzBLbSV4J8QHXtNlk2sQszF3gXg&callback=initMap"></script>
+
+  <br> o <br/>
+  <center>
+  <div id="sfcc5gntghkztnljalce9bj5yekc9js4pm2"></div>
+  <script type="text/javascript" src="https://counter11.optistats.ovh/private/counter.js?c=c5gntghkztnljalce9bj5yekc9js4pm2&down=async" async></script>
+  <noscript><a href="https://www.contadorvisitasgratis.com" title="contadores para blogger"><img src="https://counter11.optistats.ovh/private/contadorvisitasgratis.php?c=c5gntghkztnljalce9bj5yekc9js4pm2" border="0" title="contadores para blogger" alt="contadores para blogger"></a></noscript>
+</center>
+
+</body>
+</html>

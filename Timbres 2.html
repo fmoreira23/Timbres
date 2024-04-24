@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localizador de Timbres</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    #map {
+      height: 400px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="mt-5 mb-4 text-center">Localizador de Timbres</h1>
+    
+    <!-- Mapa para mostrar los lugares cercanos -->
+    <div id="map"></div>
+  </div>
+
+  <script>
+    // Función para inicializar el mapa
+    function initMap() {
+      // Coordenadas de un punto de referencia (por ejemplo, el centro de la ciudad)
+      var centroCiudad = { lat: 40.7128, lng: -74.0060 }; // Nueva York como ejemplo
+
+      // Crea un nuevo mapa en el elemento con ID 'map'
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: centroCiudad,
+        zoom: 12 // Zoom inicial
+      });
+
+      // Obtener la ubicación del cliente con alta precisión
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+          var clienteLatLng = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+
+          // Agregar marcador para la ubicación del cliente con color celeste
+          var clienteMarker = new google.maps.Marker({
+            position: clienteLatLng,
+            map: map,
+            title: 'Tu ubicación',
+            icon: {
+              path: google.maps.SymbolPath.CIRCLE,
+              scale: 10,
+              fillColor: 'lightblue',
+              fillOpacity: 1,
+              strokeColor: 'white',
+              strokeWeight: 2
+            }
+          });
+
+          // Centrar el mapa en la ubicación del cliente
+          map.setCenter(clienteLatLng);
+        }, function() {
+          // Manejar errores de geolocalización
+          alert('Error: No se pudo obtener la ubicación del cliente.');
+        }, { enableHighAccuracy: true });
+      } else {
+        // El navegador no soporta geolocalización
+        alert('Error: Tu navegador no soporta geolocalización.');
+      }
+
+      // Aquí podrías utilizar la API de geolocalización para obtener la ubicación del cliente
+      // y luego realizar una solicitud para obtener los lugares cercanos
+      // Por simplicidad, este ejemplo solo muestra unos pocos marcadores estáticos
+      var lugaresCercanos = [
+        { lat: -34.891679, lng: -56.187300, nombre: 'Palacio Lesgislativo' },
+        { lat: -34.906318, lng: -56.197768, nombre: 'Palacio Salvo' },
+        { lat: -34.895442, lng: -56.153908, nombre: 'Estadio Centenario' }
+      ];
+	  /*var direccionesCercanas = [
+            '1600 Amphitheatre Parkway, Mountain View, CA',
+            '1401 West Capitol Avenue, West Sacramento, CA',
+            '24 Willie Mays Plaza, San Francisco, CA'
+          ];
+		*/
+      // Añade marcadores para cada lugar cercano
+      lugaresCercanos.forEach(function(lugar) {
+        var marker = new google.maps.Marker({
+          position: { lat: lugar.lat, lng: lugar.lng },
+          map: map,
+          title: lugar.nombre
+        });
+      });
+    }
+  </script>
+
+  <!-- Carga de la API de Google Maps -->
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnGCi5DzBLbSV4J8QHXtNlk2sQszF3gXg&callback=initMap"></script>
+</body>
+</html>
